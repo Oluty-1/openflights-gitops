@@ -1,0 +1,24 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  name: openflights-build-push-run-001
+  namespace: default
+spec:
+  pipelineRef:
+    name: openflights-build-push
+  taskRunTemplate:
+    serviceAccountName: openflights-pipeline-sa
+  params:
+    - name: repo-url
+      value: "https://github.com/Oluty-1/open-flights_makerble.git"
+    - name: image-repo
+      value: "oluty/openflights"
+    - name: image-tag
+      value: "tekton-latest"
+  workspaces:
+    - name: shared-workspace
+      persistentVolumeClaim:
+        claimName: openflights-workspace
+    - name: dockerconfig
+      secret:
+        secretName: dockerhub-secret
