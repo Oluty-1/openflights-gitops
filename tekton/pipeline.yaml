@@ -1,0 +1,51 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: openflights-build-push
+  namespace: default
+spec:
+  params:
+    - name: repo-url
+      type: string
+      description: Git repository URL
+      default: https://github.com/Oluty-1/open-flights_makerble.git
+    - name: image-repo
+      type: string
+      description: Docker image repository
+      default: oluty/openflights
+    - name: image-tag
+      type: string
+      description: Docker image tag
+      default: latest
+  workspaces:
+    - name: shared-workspace
+      description: Shared workspace for tasks
+  tasks:
+    - name: fetch-repository
+      taskRef:
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+      params:
+        - name: url
+          value: $(params.repo-url)
+        - name: revision
+          value: main
+    - name: build-push-image
+      taskRef:
+        name: kaniko
+      runAfter:
+        - fetch-repository
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+      params:
+        - name: IMAGE
+          value: $(params.image-repo):$(params.image-tag)
+        - name: DOCKERFILE
+          value: ./Dockerfile
+        - name: CONTEXT
+          value: .
+        - name: EXTRA_ARGS
+          value: --build-arg=PLATFORM=linux/amd64
