@@ -48,4 +48,4 @@ spec:
         - name: CONTEXT
           value: .
         - name: EXTRA_ARGS
-          value: --build-arg=PLATFORM=linux/amd64
+          value: --build-arg=PLATFORM=linux/arm64
