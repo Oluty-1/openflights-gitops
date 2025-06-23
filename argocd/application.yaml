@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+   kind: Application
+   metadata:
+     name: openflights
+     namespace: argocd
+     finalizers:
+       - resources-finalizer.argocd.argoproj.io
+
+   spec:
+     project: default
+
+     source:
+       repoURL: https://github.com/oluty/openflights-gitops.git
+       targetRevision: main
+       path: openflights
+       helm:
+         valueFiles:
+           - values.yaml
+
+     destination:
+       server: https://kubernetes.default.svc
+       namespace: openflights
+
+     syncPolicy:
+       automated:
+         prune: true
+         selfHeal: true
+       syncOptions:
+         - CreateNamespace=true
