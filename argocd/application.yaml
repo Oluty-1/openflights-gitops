@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/oluty/openflights-gitops.git
+    repoURL: https://github.com/Oluty-1/openflights-gitops.git
     targetRevision: main
     path: openflights
     helm:
